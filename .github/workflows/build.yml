@@ -82,18 +82,7 @@ jobs:
         SERVER_PID=$!
 
         # Wait for server to come up
-        for i in $(seq 1 60); do
-          if curl -sf http://localhost:8080/segments >/dev/null 2>&1; then
-            echo "Server is up after ${i}s"
-            break
-          fi
-          if [ "$i" -eq 60 ]; then
-            echo "Timed out waiting for headless server"
-            kill $SERVER_PID 2>/dev/null || true
-            exit 1
-          fi
-          sleep 1
-        done
+        timeout 60 bash -c 'until nc -z localhost 8080; do sleep 1; done'
 
         # Run tests
         bash test_endpoints.sh || TEST_EXIT=$?
