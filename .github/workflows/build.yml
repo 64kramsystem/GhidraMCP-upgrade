@@ -69,6 +69,41 @@ jobs:
     - name: Build with Maven
       run: mvn clean package assembly:single -Dghidra.version="$GHIDRA_VERSION"
 
+    - name: Run integration tests
+      run: |
+        # Import test binary into a headless Ghidra project
+        mkdir -p /tmp/test_project
+        "$GHIDRA_DIR"/support/analyzeHeadless \
+          /tmp/test_project test_mcp \
+          -import test/fixtures/test_6502.bin \
+          -processor "6502:LE:16:default" \
+          -scriptPath "$(pwd)/test" \
+          -postScript HeadlessMCPServer.java &
+        SERVER_PID=$!
+
+        # Wait for server to come up
+        for i in $(seq 1 60); do
+          if curl -sf http://localhost:8080/segments >/dev/null 2>&1; then
+            echo "Server is up after ${i}s"
+            break
+          fi
+          if [ "$i" -eq 60 ]; then
+            echo "Timed out waiting for headless server"
+            kill $SERVER_PID 2>/dev/null || true
+            exit 1
+          fi
+          sleep 1
+        done
+
+        # Run tests
+        bash test_endpoints.sh || TEST_EXIT=$?
+
+        # Shutdown headless server
+        curl -sf http://localhost:8080/shutdown >/dev/null 2>&1 || true
+        wait $SERVER_PID 2>/dev/null || true
+
+        exit ${TEST_EXIT:-0}
+
     - name: Assemble release directory
       run: |
         mkdir release
