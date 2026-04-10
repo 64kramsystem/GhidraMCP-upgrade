@@ -79,3 +79,22 @@ jobs:
         name: GhidraMCP-artifact
         path: |
           release/*
+
+    - name: Check if release-worthy files changed
+      id: changes
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      run: |
+        CHANGED=$(git diff --name-only HEAD~1 HEAD -- src/ pom.xml bridge_mcp_ghidra.py)
+        if [ -n "$CHANGED" ]; then
+          echo "release=true" >> "$GITHUB_OUTPUT"
+        fi
+
+    - name: Create release
+      if: steps.changes.outputs.release == 'true'
+      run: |
+        TAG="v${GHIDRA_VERSION}-$(date -u +%Y%m%d%H%M%S)"
+        gh release create "$TAG" release/* \
+          --title "GhidraMCP for Ghidra $GHIDRA_VERSION" \
+          --notes "Built against Ghidra $GHIDRA_VERSION"
+      env:
+        GH_TOKEN: ${{ github.token }}
