@@ -29,6 +29,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v6
+      with:
+        fetch-depth: 2
     - name: Set up JDK 21
       uses: actions/setup-java@v5
       with:
@@ -79,3 +81,22 @@ jobs:
         name: GhidraMCP-artifact
         path: |
           release/*
+
+    - name: Check if release-worthy files changed
+      id: changes
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      run: |
+        CHANGED=$(git diff --name-only HEAD~1 HEAD -- src/ pom.xml bridge_mcp_ghidra.py)
+        if [ -n "$CHANGED" ]; then
+          echo "release=true" >> "$GITHUB_OUTPUT"
+        fi
+
+    - name: Create release
+      if: steps.changes.outputs.release == 'true' || github.event_name == 'workflow_dispatch'
+      run: |
+        TAG="v${GHIDRA_VERSION}-$(date -u +%Y%m%d%H%M%S)"
+        gh release create "$TAG" release/* \
+          --title "GhidraMCP for Ghidra $GHIDRA_VERSION" \
+          --notes "Built against Ghidra $GHIDRA_VERSION"
+      env:
+        GH_TOKEN: ${{ github.token }}
