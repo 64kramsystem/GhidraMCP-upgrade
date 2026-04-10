@@ -92,7 +92,7 @@ jobs:
         fi
 
     - name: Create release
-      if: steps.changes.outputs.release == 'true'
+      if: steps.changes.outputs.release == 'true' || github.event_name == 'workflow_dispatch'
       run: |
         TAG="v${GHIDRA_VERSION}-$(date -u +%Y%m%d%H%M%S)"
         gh release create "$TAG" release/* \
