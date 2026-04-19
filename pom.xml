@@ -124,7 +124,7 @@
           </descriptors>
           
           <!-- The name of the final zip -->
-          <finalName>GhidraMCP-${project.version}</finalName>
+          <finalName>GhidraMCP-next-${project.version}</finalName>
           
           <!-- Don't append the assembly ID -->
           <appendAssemblyId>false</appendAssemblyId>

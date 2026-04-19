@@ -120,7 +120,7 @@ jobs:
       run: |
         TAG="v${GHIDRA_VERSION}-$(date -u +%Y%m%d%H%M%S)"
         gh release create "$TAG" release/* \
-          --title "GhidraMCP for Ghidra $GHIDRA_VERSION" \
+          --title "GhidraMCP-Next for Ghidra $GHIDRA_VERSION" \
           --notes "Built against Ghidra $GHIDRA_VERSION"
       env:
         GH_TOKEN: ${{ github.token }}
