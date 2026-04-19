@@ -1,6 +1,6 @@
 # GhidraMCP-next
 
-Fork of [LaurieWired/GhidraMCP](https://github.com/LaurieWired/GhidraMCP) updated for Ghidra 12.
+Fork of [LaurieWired/GhidraMCP](https://github.com/LaurieWired/GhidraMCP), updated for Ghidra 12, and with some improvements.
 
 ## Changes from upstream
 
