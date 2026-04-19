@@ -1,4 +1,4 @@
-# GhidraMCP-upgrade
+# GhidraMCP-next
 
 Fork of [LaurieWired/GhidraMCP](https://github.com/LaurieWired/GhidraMCP) updated for Ghidra 12.
 
@@ -12,7 +12,7 @@ Fork of [LaurieWired/GhidraMCP](https://github.com/LaurieWired/GhidraMCP) update
 
 ## Installation
 
-Download the latest [release](https://github.com/64kramsystem/GhidraMCP-upgrade/releases) ZIP, then in Ghidra:
+Download the latest [release](https://github.com/64kramsystem/GhidraMCP-next/releases) ZIP, then in Ghidra:
 
 1. File > Install Extensions > `+` > select the ZIP
 2. Restart Ghidra
@@ -37,7 +37,7 @@ done
 mvn clean package assembly:single
 ```
 
-Output: `target/GhidraMCP-1.0-SNAPSHOT.zip`
+Output: `target/GhidraMCP-next-1.0-SNAPSHOT.zip`
 
 ## Testing
 
